@@ -43,7 +43,7 @@ public abstract class ApplicationContext {
         if (components.containsKey(name)) {
             throw new IllegalArgumentException(String.format("Component %s is already register", name));
         }
-        log.debug("Add component {}", component);
+        log.debug("Add component {}={}", name, component.getClass());
         components.put(name, component);
     }
 
@@ -62,6 +62,7 @@ public abstract class ApplicationContext {
         log.debug("Start initialize context");
         try {
             instance = context.getDeclaredConstructor().newInstance();
+            instance.initializeContext();
         } catch (Exception e) {
             log.error("Failed to initialize context", e);
             System.exit(-1);
