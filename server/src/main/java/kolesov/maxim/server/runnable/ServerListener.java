@@ -10,7 +10,7 @@ import lombok.SneakyThrows;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,7 +19,7 @@ public class ServerListener implements Runnable {
 
     private final ServerConfig serverConfig;
     private final ServerStateConfig serverStateConfig;
-    private final Queue<Message> messageQueue;
+    private final BlockingQueue<Message> messageQueue;
     private final UserRegisterService userRegisterService;
 
     @Override

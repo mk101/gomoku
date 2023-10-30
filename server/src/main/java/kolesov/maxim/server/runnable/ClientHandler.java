@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.DataInputStream;
 import java.net.Socket;
-import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
 
 import static kolesov.maxim.server.model.socket.Message.MessageDirection.*;
 
@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable {
 
     private final Socket socket;
     private final ServerStateConfig serverStateConfig;
-    private final Queue<Message> messageQueue;
+    private final BlockingQueue<Message> messageQueue;
     private final UserRegisterService userRegisterService;
 
     @Override
@@ -39,7 +39,7 @@ public class ClientHandler implements Runnable {
 
             if (input.available() > 0) {
                 MessageDto dto = OBJECT_MAPPER.readValue(input.readUTF(), MessageDto.class);
-                messageQueue.add(new Message(userId, dto, IN));
+                messageQueue.put(new Message(userId, dto, IN));
             }
 
         }

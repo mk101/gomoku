@@ -10,14 +10,14 @@ import kolesov.maxim.server.service.socket.SendService;
 import kolesov.maxim.server.service.socket.UserRegisterService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 @RequiredArgsConstructor
 public class LaunchService {
 
     private final ServerConfig serverConfig;
     private final ServerStateConfig serverStateConfig;
-    private final Queue<Message> messageQueue;
+    private final BlockingQueue<Message> messageQueue;
     private final UserRegisterService userRegisterService;
     private final SendService sendService;
     private final MessageDispatcher messageDispatcher;
