@@ -11,6 +11,7 @@ import java.util.Properties;
 public abstract class ApplicationContext {
 
     private static final String PROPERTIES_FILE_NAME = "application.properties";
+    private static final String COMMON_PROPERTIES_FILE_NAME = "common.properties";
 
     private static ApplicationContext instance;
 
@@ -24,6 +25,9 @@ public abstract class ApplicationContext {
 
         try {
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME));
+            log.debug("Load {}", PROPERTIES_FILE_NAME);
+            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(COMMON_PROPERTIES_FILE_NAME));
+            log.debug("Load {}", COMMON_PROPERTIES_FILE_NAME);
         } catch (IOException e) {
             log.error("Can't load properties", e);
             System.exit(-1);

@@ -1,11 +1,14 @@
 package kolesov.maxim.server.context;
 
+import kolesov.maxim.common.config.GameConfig;
 import kolesov.maxim.common.context.ApplicationContext;
 import kolesov.maxim.server.config.ServerConfig;
-import kolesov.maxim.server.config.ServerStateConfig;
+import kolesov.maxim.server.model.socket.ServerState;
 import kolesov.maxim.server.dispatcher.MessageDispatcher;
 import kolesov.maxim.server.model.socket.Message;
 import kolesov.maxim.server.service.LaunchService;
+import kolesov.maxim.server.service.game.GameService;
+import kolesov.maxim.server.service.game.PlayerService;
 import kolesov.maxim.server.service.socket.SendService;
 import kolesov.maxim.server.service.socket.UserRegisterService;
 
@@ -18,17 +21,22 @@ public class ServerApplicationContext extends ApplicationContext {
     @Override
     protected void initializeContext() {
         registerComponent("serverConfig", new ServerConfig());
-        registerComponent("serverStateConfig", new ServerStateConfig());
+        registerComponent("gameConfig", new GameConfig());
+        registerComponent("serverState", new ServerState());
 
         registerComponent("messageQueue", new ArrayBlockingQueue<Message>(MESSAGE_QUEUE_CAPACITY));
 
         registerComponent("userRegisterService", new UserRegisterService());
         registerComponent("sendService", new SendService(get("userRegisterService")));
 
-        registerComponent("messageDispatcher", new MessageDispatcher());
+        registerComponent("playerService", new PlayerService());
+        registerComponent("gameService", new GameService(get("playerService"), get("gameConfig"),
+                get("sendService")));
+
+        registerComponent("messageDispatcher", new MessageDispatcher(get("playerService"), get("gameService")));
 
         registerComponent("launchService", new LaunchService(
-            get("serverConfig"), get("serverStateConfig"), get("messageQueue"),
+            get("serverConfig"), get("serverState"), get("messageQueue"),
             get("userRegisterService"), get("sendService"), get("messageDispatcher")));
     }
 

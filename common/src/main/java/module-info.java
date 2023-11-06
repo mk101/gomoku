@@ -4,4 +4,5 @@ open module kolesov.maxim.common {
     requires ch.qos.logback.core;
 
     exports kolesov.maxim.common.context;
+    exports kolesov.maxim.common.config;
 }

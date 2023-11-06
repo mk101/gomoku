@@ -1,8 +1,9 @@
 package kolesov.maxim.server.runnable;
 
 import kolesov.maxim.server.config.ServerConfig;
-import kolesov.maxim.server.config.ServerStateConfig;
+import kolesov.maxim.server.model.socket.ServerState;
 import kolesov.maxim.server.model.socket.Message;
+import kolesov.maxim.server.service.socket.SendService;
 import kolesov.maxim.server.service.socket.UserRegisterService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,9 +19,10 @@ import java.util.concurrent.Executors;
 public class ServerListener implements Runnable {
 
     private final ServerConfig serverConfig;
-    private final ServerStateConfig serverStateConfig;
+    private final ServerState serverState;
     private final BlockingQueue<Message> messageQueue;
     private final UserRegisterService userRegisterService;
+    private final SendService sendService;
 
     @Override
     @SneakyThrows
@@ -29,9 +31,9 @@ public class ServerListener implements Runnable {
         try (ServerSocket socket = new ServerSocket(
                 serverConfig.getPort(), serverConfig.getConnectionCount(), InetAddress.getByName(serverConfig.getHost()))) {
 
-            while (!serverStateConfig.isShutdown()) {
+            while (!serverState.isShutdown()) {
                 Socket client = socket.accept();
-                pool.execute(new ClientHandler(client, serverStateConfig, messageQueue, userRegisterService));
+                pool.execute(new ClientHandler(client, serverState, messageQueue, userRegisterService, sendService));
             }
         }
 

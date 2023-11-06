@@ -1,4 +1,4 @@
-package kolesov.maxim.server.config;
+package kolesov.maxim.server.model.socket;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServerStateConfig {
+public class ServerState {
 
     private transient boolean isShutdown = false;
 
