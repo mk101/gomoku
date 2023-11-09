@@ -34,7 +34,11 @@ public class MessageListener implements Runnable {
                 continue;
             }
 
-            messageDispatcher.dispatch(message);
+            try {
+                messageDispatcher.dispatch(message);
+            } catch (Exception e) {
+                log.error("Exception", e);
+            }
         }
     }
 

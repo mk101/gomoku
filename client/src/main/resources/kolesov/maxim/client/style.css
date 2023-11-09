@@ -1,0 +1,17 @@
+
+Button {
+    -fx-background-radius: 0;
+    -fx-border-color: white;
+}
+
+Button:empty {
+    -fx-background-color: gray;
+}
+
+Button:white {
+    -fx-background-color: white;
+}
+
+Button:black {
+    -fx-background-color: black;
+}

@@ -44,12 +44,21 @@ public class ClientHandler implements Runnable {
         try {
             while (!serverState.isShutdown()) {
 
+                if (socket.getInputStream() == null) {
+                    throw new RuntimeException();
+                }
+
                 if (input.available() > 0) {
                     MessageDto dto = OBJECT_MAPPER.readValue(input.readUTF(), MessageDto.class);
+                    if (dto.getAction() == DISCONNECT) {
+                        throw new RuntimeException("Disconnect");
+                    }
                     messageQueue.put(new Message(userId, dto, IN));
                 }
 
             }
+        } catch (Exception e) {
+            log.error("catch exception", e);
         } finally {
             userRegisterService.deleteUser(userId);
             messageQueue.put(new Message(userId, new MessageDto(DISCONNECT, Map.of()), IN));

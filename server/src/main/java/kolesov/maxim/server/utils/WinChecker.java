@@ -38,7 +38,7 @@ public class WinChecker {
             right++;
         }
 
-        return right - left >= WIN_ROW;
+        return right - left + 1 >= WIN_ROW;
     }
 
     private static boolean checkVertical(Color[][] map, int x, int y, Color playerColor) {
@@ -53,7 +53,7 @@ public class WinChecker {
             bottom++;
         }
 
-        return bottom - top >= WIN_ROW;
+        return bottom - top + 1 >= WIN_ROW;
     }
 
     /*
@@ -77,7 +77,7 @@ public class WinChecker {
             bottom++;
         }
 
-        return bottom - top >= WIN_ROW;
+        return bottom - top + 1 >= WIN_ROW;
     }
 
 
@@ -102,7 +102,7 @@ public class WinChecker {
             top--;
         }
 
-        return bottom - top >= WIN_ROW;
+        return bottom - top + 1 >= WIN_ROW;
     }
 
 }

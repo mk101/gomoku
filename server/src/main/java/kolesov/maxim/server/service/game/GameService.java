@@ -43,6 +43,11 @@ public class GameService {
 
 
         this.map = new Color[config.getFieldWidth()][config.getFieldHeight()];
+        for (int i = 0; i < config.getFieldWidth(); i++) {
+            for (int j = 0; j < config.getFieldHeight(); j++) {
+                this.map[i][j] = Color.EMPTY;
+            }
+        }
         this.currentPlayer = null;
         this.gameStarted = false;
     }
@@ -77,6 +82,11 @@ public class GameService {
         currentPlayer = playerService.getPlayer(Color.BLACK).orElseThrow(() -> new NullPointerException("Can't find black player"));
         gameStarted = true;
         map = new Color[config.getFieldWidth()][config.getFieldHeight()];
+        for (int i = 0; i < config.getFieldWidth(); i++) {
+            for (int j = 0; j < config.getFieldHeight(); j++) {
+                map[i][j] = Color.EMPTY;
+            }
+        }
 
         sendState();
     }
@@ -88,6 +98,8 @@ public class GameService {
 
         currentPlayer = null;
         gameStarted = false;
+
+        playerService.clearReady();
 
         sendState();
     }
@@ -106,6 +118,7 @@ public class GameService {
         if (WinChecker.check(map, x, y)) {
             sendService.sendMessage(new MessageDto(WIN, Map.of("user", currentPlayer)));
             stopGame();
+            playerService.swapColors();
             return;
         }
 

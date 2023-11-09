@@ -54,6 +54,10 @@ public class PlayerService {
         return readySet.size() == 2;
     }
 
+    public void clearReady() {
+        readySet.clear();
+    }
+
     private Color getOpposite(Color color) {
         return switch (color) {
             case WHITE -> Color.BLACK;
