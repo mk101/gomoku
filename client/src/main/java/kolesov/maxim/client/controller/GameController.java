@@ -1,5 +1,8 @@
 package kolesov.maxim.client.controller;
 
+import generated.Color;
+import generated.State;
+import generated.Player;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
@@ -13,10 +16,7 @@ import kolesov.maxim.client.event.ButtonClickEventHandler;
 import kolesov.maxim.client.runnable.Connection;
 import kolesov.maxim.common.config.GameConfig;
 import kolesov.maxim.common.context.ApplicationContext;
-import kolesov.maxim.common.dto.*;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
 
 @Slf4j
 public class GameController {
@@ -46,7 +46,6 @@ public class GameController {
     private Label colorLabel;
 
     public void stop() {
-        connection.sendMessage(new MessageDto(MessageAction.DISCONNECT, Map.of()));
         connection.setClose(true);
     }
 
@@ -87,7 +86,7 @@ public class GameController {
 
     @FXML
     private void ready(ActionEvent actionEvent) {
-        connection.sendMessage(new MessageDto(MessageAction.READY, Map.of()));
+        connection.ready();
         readyButton.setDisable(true);
     }
 
@@ -108,26 +107,26 @@ public class GameController {
         });
     }
 
-    private void updateState(StateDto state) {
+    private void updateState(State state) {
         if (!state.isGameRunning()) {
             disableButtons();
             readyButton.setDisable(false);
             return;
         }
 
-        if (connection.getPlayerId().equals(state.getCurrentPlayer())) {
+        if (connection.getPlayerId().toString().equals(state.getCurrentPlayer())) {
             activeButtons();
         } else {
             disableButtons();
         }
 
         Platform.runLater(() ->
-                setColor(state.getPlayers().stream().filter(p -> connection.getPlayerId().equals(p.getId())).map(PlayerDto::getColor).findFirst().orElseThrow()));
+                setColor(state.getPlayers().stream().filter(p -> connection.getPlayerId().toString().equals(p.getId())).map(Player::getColor).findFirst().orElseThrow()));
 
         for (int i = 0; i < config.getFieldWidth(); i++) {
             for (int j = 0; j < config.getFieldHeight(); j++) {
                 Button button = getButton(i,j);
-                Color color = state.getMap()[i][j];
+                Color color = state.getMap().get(i).getItem().get(j);
 
                 switch (color) {
                     case EMPTY -> {

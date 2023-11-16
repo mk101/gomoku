@@ -1,6 +1,6 @@
 package kolesov.maxim.server.service.game;
 
-import kolesov.maxim.common.dto.Color;
+import kolesov.maxim.server.model.Color;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

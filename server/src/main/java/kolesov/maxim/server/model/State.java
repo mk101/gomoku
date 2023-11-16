@@ -1,4 +1,4 @@
-package kolesov.maxim.common.dto;
+package kolesov.maxim.server.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +12,11 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StateDto {
+public class State {
 
     private Color[][] map;
 
-    private Set<PlayerDto> players;
+    private Set<Player> players;
 
     private UUID currentPlayer;
 

@@ -1,6 +1,6 @@
 package kolesov.maxim.server.utils;
 
-import kolesov.maxim.common.dto.Color;
+import kolesov.maxim.server.model.Color;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

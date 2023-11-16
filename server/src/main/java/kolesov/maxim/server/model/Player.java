@@ -1,4 +1,4 @@
-package kolesov.maxim.common.dto;
+package kolesov.maxim.server.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerDto {
+public class Player {
 
     private UUID id;
     private Color color;

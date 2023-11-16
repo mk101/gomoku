@@ -1,32 +1,22 @@
 package kolesov.maxim.server.service.game;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import kolesov.maxim.common.config.GameConfig;
-import kolesov.maxim.common.dto.MessageDto;
-import kolesov.maxim.common.dto.Color;
-import kolesov.maxim.common.dto.PlayerDto;
-import kolesov.maxim.common.dto.StateDto;
-import kolesov.maxim.server.service.socket.SendService;
+import kolesov.maxim.server.model.Color;
+import kolesov.maxim.server.model.Player;
+import kolesov.maxim.server.model.State;
 import kolesov.maxim.server.utils.WinChecker;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static kolesov.maxim.common.dto.MessageAction.*;
 
 @Slf4j
 public class GameService {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private final PlayerService playerService;
     private final GameConfig config;
-    private final SendService sendService;
 
     private Color[][] map;
 
@@ -34,12 +24,14 @@ public class GameService {
     private UUID currentPlayer;
 
     @Getter
+    private UUID winner;
+
+    @Getter
     private transient boolean gameStarted;
 
-    public GameService(PlayerService playerService, GameConfig config, SendService sendService) {
+    public GameService(PlayerService playerService, GameConfig config) {
         this.playerService = playerService;
         this.config = config;
-        this.sendService = sendService;
 
 
         this.map = new Color[config.getFieldWidth()][config.getFieldHeight()];
@@ -79,6 +71,8 @@ public class GameService {
             throw new IllegalStateException("Game is already started");
         }
 
+        winner = null;
+
         currentPlayer = playerService.getPlayer(Color.BLACK).orElseThrow(() -> new NullPointerException("Can't find black player"));
         gameStarted = true;
         map = new Color[config.getFieldWidth()][config.getFieldHeight()];
@@ -87,8 +81,6 @@ public class GameService {
                 map[i][j] = Color.EMPTY;
             }
         }
-
-        sendState();
     }
 
     public void stopGame() throws IllegalStateException {
@@ -100,8 +92,6 @@ public class GameService {
         gameStarted = false;
 
         playerService.clearReady();
-
-        sendState();
     }
 
     @SneakyThrows
@@ -116,7 +106,7 @@ public class GameService {
         map[x][y] = color;
 
         if (WinChecker.check(map, x, y)) {
-            sendService.sendMessage(new MessageDto(WIN, Map.of("user", currentPlayer)));
+            winner = currentPlayer;
             stopGame();
             playerService.swapColors();
             return;
@@ -126,21 +116,17 @@ public class GameService {
                 .filter(u -> !u.equals(currentPlayer))
                 .findAny().orElseThrow(() -> new IllegalStateException("Expected 2 players"));
 
-        sendState();
     }
 
-    private void sendState() {
-        StateDto state = StateDto.builder()
+    public State getState() {
+        return State.builder()
             .isGameRunning(gameStarted)
             .currentPlayer(currentPlayer)
             .players(playerService.getPlayers().stream()
-                .map(u -> new PlayerDto(u, playerService.getColor(u).orElseThrow(() -> new NullPointerException("Player not found"))))
+                .map(u -> new Player(u, playerService.getColor(u).orElseThrow(() -> new NullPointerException("Player not found"))))
                 .collect(Collectors.toSet()))
             .map(map)
         .build();
-
-        MessageDto message = new MessageDto(STATE, OBJECT_MAPPER.convertValue(state, new TypeReference<Map<String, Object>>() {}));
-        sendService.sendMessage(message);
     }
 
 }

@@ -5,5 +5,4 @@ open module kolesov.maxim.common {
 
     exports kolesov.maxim.common.context;
     exports kolesov.maxim.common.config;
-    exports kolesov.maxim.common.dto;
 }

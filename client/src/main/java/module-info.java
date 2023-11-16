@@ -10,7 +10,13 @@ module kolesov.maxim.client {
 
     requires com.fasterxml.jackson.databind;
 
-    opens kolesov.maxim.client to javafx.fxml;
+    requires com.sun.xml.ws;
+    requires com.sun.xml.bind;
+
+    opens kolesov.maxim.client to javafx.fxml, com.sun.xml.bind;
+
+    opens generated to com.sun.xml.bind;
+    exports generated to com.sun.xml.ws;
     exports kolesov.maxim.client;
     exports kolesov.maxim.client.controller;
     opens kolesov.maxim.client.controller to javafx.fxml;

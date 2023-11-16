@@ -4,12 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import kolesov.maxim.client.runnable.Connection;
-import kolesov.maxim.common.dto.MessageAction;
-import kolesov.maxim.common.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +24,7 @@ public class ButtonClickEventHandler implements EventHandler<ActionEvent> {
         int width = Integer.parseInt(id.split("_")[0]);
         int height = Integer.parseInt(id.split("_")[1]);
 
-        connection.sendMessage(new MessageDto(MessageAction.MOVE, Map.of("x", width, "y", height)));
+        connection.move(width, height);
     }
 
 }
